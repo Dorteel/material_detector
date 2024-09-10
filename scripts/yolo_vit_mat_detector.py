@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
-
+#!/home/user/pel_ws/pel_venv/bin/python
+import sys
 import rospy
 import cv2
 import time
@@ -28,9 +28,9 @@ class YoloVitMaterialDetector:
         # self.rtdetr_model = RTDETR("rtdetr-l.pt") # for OD
         self.vit_model = model
         self.vit_processor = processor
-        self.image_sub = rospy.Subscriber('/camera/image_raw', Image, self.image_callback)
-        self.result_pub = rospy.Publisher('vit_inference/result', MaterialDetected, queue_size=1) 
-        self.result_image = rospy.Publisher('vit_inference/image', Image, queue_size=1)
+        self.image_sub = rospy.Subscriber('/locobot/camera/color/image_raw', Image, self.image_callback)
+        self.result_pub = rospy.Publisher('annotators/material_detector/result', MaterialDetected, queue_size=1) 
+        self.result_image = rospy.Publisher('annotators/material_detector/image', Image, queue_size=1)
         self.timing_list = []
         self.max_timing_records = 100  # Store last 100 timing records
         print("Initialized Detector")
@@ -122,7 +122,7 @@ class YoloVitMaterialDetector:
         # Show processed image with detection when objects have been detected
         if len(results) > 0 and len(results[0].boxes) > 0:
             cv2.imshow("Material Detection", cv_image)
-            cv2.imwrite('/home/kai/catkin_ws/src/vit_inference/results/images/image' + str(len(self.timing_list)) + '.png', cv_image)
+            # cv2.imwrite('/home/kai/catkin_ws/src/vit_inference/results/images/image' + str(len(self.timing_list)) + '.png', cv_image)
             cv2.waitKey(1)
 
             # Publish the image with detections

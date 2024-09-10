@@ -37,6 +37,7 @@ find_package(OpenCV 4 REQUIRED)
 
 catkin_install_python(PROGRAMS 
   scripts/yolo_vit_mat_detector.py
+  scripts/material_detector_service.py
   scripts/webcam_pub.py
   scripts/webcam_sub.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
