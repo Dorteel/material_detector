@@ -15,7 +15,7 @@ from transformers import AutoImageProcessor, AutoModelForImageClassification
 processor = AutoImageProcessor.from_pretrained("ioanasong/vit-MINC-2500")
 model = AutoModelForImageClassification.from_pretrained("ioanasong/vit-MINC-2500") 
 
-class YoloVitMaterialDetector:
+class YoloVitMaterialDetectorService:
     def __init__(self):
         self.bridge = CvBridge()
         self.labels_materials = ['brick', 'carpet', 'ceramic', 'fabric', 'foliage', 'food', 'glass', 'hair',
@@ -25,7 +25,8 @@ class YoloVitMaterialDetector:
         self.vit_model = model
         self.vit_processor = processor
         self.service = rospy.Service('material_detection_service', ImageDetection, self.handle_material_detection)  # ROS service
-
+        rospy.loginfo("material_detection_service is ready.")
+        
     def handle_material_detection(self, req):
         try:
             # Convert ROS image to OpenCV format
@@ -47,7 +48,6 @@ class YoloVitMaterialDetector:
             boxes = result.boxes.xyxy.cpu().numpy()
             classes = result.boxes.cls.cpu().numpy()
             confidences = result.boxes.conf.cpu().numpy()
-
             for i, box in enumerate(boxes):
                 x1, y1, x2, y2 = map(int, box[:4])
                 crop = cv_image[y1:y2, x1:x2]
@@ -76,9 +76,9 @@ class YoloVitMaterialDetector:
 
 if __name__ == '__main__':
     rospy.init_node('yolo_vit_mat_detector_service')
-    detector = YoloVitMaterialDetector()
+    detector = YoloVitMaterialDetectorService()
     try:
         rospy.spin()
     except KeyboardInterrupt:
         print("Shutting down")
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
